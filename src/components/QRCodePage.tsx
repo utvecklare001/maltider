@@ -12,6 +12,7 @@ export default function QRCodePage({ onBack }: QRCodePageProps) {
   const registrationUrl = "https://utvecklare001.github.io/maltider/";
   const pageTitle = 'Måltidsregistrering';
 
+  
   const handleCopy = () => {
     navigator.clipboard.writeText(registrationUrl);
     setCopied(true);
