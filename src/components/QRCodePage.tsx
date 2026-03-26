@@ -9,7 +9,8 @@ interface QRCodePageProps {
 export default function QRCodePage({ onBack }: QRCodePageProps) {
   const [copied, setCopied] = useState(false);
 
-  const registrationUrl = "https://utvecklare001.github.io/maltider/";
+ // const registrationUrl = "https://utvecklare001.github.io/maltider/";
+  const registrationUrl = "https://google.com";
   const pageTitle = 'Måltidsregistrering';
 
   
