@@ -19,7 +19,7 @@ function App() {
   href="https://sodexo.mashie.com/public/app/%C3%96rebro%20skolor/ab857a25?country=se"
   target="_blank"
   rel="noopener noreferrer"
-  className="px-4 py-2 rounded-lg font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 inline-block"
+  className="px-4 py-2 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors inline-block"
 >
   Matsedel
 </a>
