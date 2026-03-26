@@ -15,16 +15,14 @@ function App() {
           <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-800">Måltidsregistrering</h2>
             <div className="flex gap-4">
-              <button
-                onClick={() => setCurrentPage('meal')}
-                className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                  currentPage === 'meal'
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Registrering
-              </button>
+              <a
+  href="https://sodexo.mashie.com/public/app/%C3%96rebro%20skolor/ab857a25?country=se"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="px-4 py-2 rounded-lg font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 inline-block"
+>
+  Matsedel
+</a>
               <button
                 onClick={() => setCurrentPage('qr')}
                 className="px-4 py-2 rounded-lg font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors flex items-center gap-2"
