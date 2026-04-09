@@ -21,15 +21,30 @@ export default function QRCodePage({ onBack }: QRCodePageProps) {
   };
 
   const handleDownload = () => {
-    const qrElement = document.querySelector('canvas');
-    if (qrElement) {
-      const url = qrElement.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'qr-kod-maltidsregistrering.png';
-      link.click();
-    }
-  };
+  const canvas = document.querySelector('canvas');
+  if (!canvas) {
+    alert("QR-koden kunde inte hittas");
+    return;
+  }
+
+  try {
+    // Gör bild från canvas
+    const pngUrl = canvas.toDataURL("image/png");
+
+    // Skapa länk
+    const link = document.createElement("a");
+    link.href = pngUrl;
+
+    // Snyggt filnamn med datum
+    const date = new Date().toISOString().split("T")[0];
+    link.download = `qr-maltidsregistrering-${date}.png`;
+
+    // Klicka automatiskt
+    link.click();
+  } catch (error) {
+    alert("Kunde inte ladda ner QR-koden");
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-8 px-4">
