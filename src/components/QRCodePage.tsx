@@ -52,12 +52,12 @@ export default function QRCodePage({ onBack }: QRCodePageProps) {
 
           <div className="flex flex-col items-center gap-8">
             <div className="bg-white p-6 border-2 border-gray-200 rounded-xl">
-              <QRCodeSVG
-                value={registrationUrl}
-                size={256}
-                level="H"
-                includeMargin={true}
-              />
+              <QRCodeCanvas
+  value={registrationUrl}
+  size={256}
+  level="H"
+  includeMargin={true}
+/>
             </div>
 
             <div className="w-full space-y-3">
