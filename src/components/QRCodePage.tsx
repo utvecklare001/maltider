@@ -1,4 +1,5 @@
-import { QRCodeSVG } from 'qrcode.react';
+
+import { QRCodeCanvas } from 'qrcode.react';
 import { Copy, Download, ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
 
