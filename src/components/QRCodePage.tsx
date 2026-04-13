@@ -1,7 +1,6 @@
-
 import { QRCodeCanvas } from 'qrcode.react';
 import { Copy, Download, ArrowLeft } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 interface QRCodePageProps {
   onBack: () => void;
@@ -9,42 +8,45 @@ interface QRCodePageProps {
 
 export default function QRCodePage({ onBack }: QRCodePageProps) {
   const [copied, setCopied] = useState(false);
+  const qrRef = useRef<HTMLDivElement>(null);
 
   const registrationUrl = "https://utvecklare001.github.io/maltider/";
   const pageTitle = 'Måltidsregistrering';
 
-  
-  const handleCopy = () => {
-    navigator.clipboard.writeText(registrationUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  // ✅ Kopiera URL
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(registrationUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      alert("Kunde inte kopiera URL");
+    }
   };
 
+  // ✅ Ladda ner QR-kod
   const handleDownload = () => {
-  const canvas = document.querySelector('canvas');
-  if (!canvas) {
-    alert("QR-koden kunde inte hittas");
-    return;
-  }
+    const canvas = qrRef.current?.querySelector("canvas");
 
-  try {
-    // Gör bild från canvas
-    const pngUrl = canvas.toDataURL("image/png");
+    if (!canvas) {
+      alert("QR-koden kunde inte hittas");
+      return;
+    }
 
-    // Skapa länk
-    const link = document.createElement("a");
-    link.href = pngUrl;
+    try {
+      const pngUrl = canvas.toDataURL("image/png");
 
-    // Snyggt filnamn med datum
-    const date = new Date().toISOString().split("T")[0];
-    link.download = `qr-maltidsregistrering-${date}.png`;
+      const link = document.createElement("a");
+      link.href = pngUrl;
 
-    // Klicka automatiskt
-    link.click();
-  } catch (error) {
-    alert("Kunde inte ladda ner QR-koden");
-  }
-};
+      const date = new Date().toISOString().split("T")[0];
+      link.download = `qr-maltidsregistrering-${date}.png`;
+
+      link.click();
+    } catch (error) {
+      alert("Kunde inte ladda ner QR-koden");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 py-8 px-4">
@@ -66,15 +68,18 @@ export default function QRCodePage({ onBack }: QRCodePageProps) {
           </p>
 
           <div className="flex flex-col items-center gap-8">
-            <div className="bg-white p-6 border-2 border-gray-200 rounded-xl">
+
+            {/* ✅ QR-kod med ref */}
+            <div className="bg-white p-6 border-2 border-gray-200 rounded-xl" ref={qrRef}>
               <QRCodeCanvas
-  value={registrationUrl}
-  size={256}
-  level="H"
-  includeMargin={true}
-/>
+                value={registrationUrl}
+                size={256}
+                level="H"
+                includeMargin={true}
+              />
             </div>
 
+            {/* 🔘 Knappar */}
             <div className="w-full space-y-3">
               <button
                 onClick={handleDownload}
@@ -97,6 +102,7 @@ export default function QRCodePage({ onBack }: QRCodePageProps) {
               </button>
             </div>
 
+            {/* 🔗 Länk */}
             <div className="w-full bg-gray-50 p-4 rounded-lg border border-gray-200">
               <p className="text-sm text-gray-600 mb-2 font-semibold">
                 Direktlänk:
@@ -106,6 +112,7 @@ export default function QRCodePage({ onBack }: QRCodePageProps) {
               </p>
             </div>
 
+            {/* 📘 Instruktioner */}
             <div className="w-full bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
               <h3 className="font-semibold text-blue-900 mb-2">Instruktioner:</h3>
               <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
@@ -115,6 +122,7 @@ export default function QRCodePage({ onBack }: QRCodePageProps) {
                 <li>Registreringen sparas direkt i databasen</li>
               </ol>
             </div>
+
           </div>
         </div>
       </div>
