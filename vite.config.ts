@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/maltider/', // <-- LÄGG TILL DENNA RAD!
+  base: '/maltider/', // <-- Lägg till denna rad!
 })
