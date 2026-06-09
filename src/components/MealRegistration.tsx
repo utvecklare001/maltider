@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { User, Utensils, Calendar, Trash2, Plus, Check } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { neon } from '@neondatabase/serverless';
+
+// Skapar en säker anslutning med länken vi la i din .env-fil
+const sql = neon(import.meta.env.VITE_DATABASE_URL || import.meta.env.DATABASE_URL);
 
 interface MealRecord {
   id: string;
@@ -25,14 +28,17 @@ export default function MealRegistration() {
   }, [registrationDate]);
 
   const fetchRecords = async () => {
-    const { data, error } = await supabase
-      .from('meal_registrations')
-      .select('*')
-      .eq('registration_date', registrationDate)
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setRecords(data);
+    try {
+      // Hämtar data direkt från Neon med vanlig SQL
+      const data = await sql`
+        SELECT id, name, meal_count, registration_date, created_at 
+        FROM public.meal_registrations 
+        WHERE registration_date = ${registrationDate}
+        ORDER BY created_at DESC
+      `;
+      setRecords(data as MealRecord[]);
+    } catch (error: any) {
+      console.error('Kunde inte hämta data:', error);
     }
   };
 
@@ -51,36 +57,37 @@ export default function MealRegistration() {
     }
 
     setLoading(true);
-    const { error } = await supabase.from('meal_registrations').insert({
-      name: name.trim(),
-      meal_count: mealNum,
-      registration_date: registrationDate,
-    });
-
-    if (error) {
-      alert('Kunde inte spara: ' + error.message);
-    } else {
+    try {
+      // Sparar en ny måltid i Neon
+      await sql`
+        INSERT INTO public.meal_registrations (name, meal_count, registration_date)
+        VALUES (${name.trim()}, ${mealNum}, ${registrationDate})
+      `;
+      
       setSuccess(true);
       setName('');
       setMealCount('1');
       setTimeout(() => setSuccess(false), 2000);
       fetchRecords();
+    } catch (error: any) {
+      alert('Kunde inte spara till Neon: ' + error.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Vill du ta bort denna registrering?')) return;
 
-    const { error } = await supabase
-      .from('meal_registrations')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      alert('Kunde inte ta bort: ' + error.message);
-    } else {
+    try {
+      // Tar bort en måltid i Neon
+      await sql`
+        DELETE FROM public.meal_registrations 
+        WHERE id = ${id}
+      `;
       fetchRecords();
+    } catch (error: any) {
+      alert('Kunde inte ta bort: ' + error.message);
     }
   };
 
@@ -104,7 +111,7 @@ export default function MealRegistration() {
           <h1 className="text-4xl font-bold text-gray-800 mb-2">
             Måltidsregistrering
           </h1>
-          <p className="text-gray-600">Registrera dina måltider här</p>
+          <p className="text-gray-600">Registrera dina måltider här (Drivs av Neon)</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
